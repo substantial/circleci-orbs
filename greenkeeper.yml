@@ -17,4 +17,6 @@ commands:
           command: |
             command -v greenkeeper-lockfile-upload > /dev/null || \
               yarn global add greenkeeper-lockfile@2
+            git config --global user.email "support@greenkeeper.io"
+            git config --global user.name "greenkeeperio-bot"
             greenkeeper-lockfile-upload
