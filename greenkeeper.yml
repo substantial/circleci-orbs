@@ -1,0 +1,20 @@
+version: 2.1
+description: Greenkeeper Commands
+
+commands:
+  lockfile-update:
+    steps:
+      - run:
+          name: "Greenkeeper: Update lockfile"
+          command: |
+            command -v greenkeeper-lockfile-update > /dev/null || \
+              yarn global add greenkeeper-lockfile@2
+            greenkeeper-lockfile-update
+  lockfile-upload:
+    steps:
+      - run:
+          name: "Greenkeeper: Upload lockfile"
+          command: |
+            command -v greenkeeper-lockfile-upload > /dev/null || \
+              yarn global add greenkeeper-lockfile@2
+            greenkeeper-lockfile-upload
