@@ -39,5 +39,10 @@ commands:
             - yarnpkg-<< parameters.cache-version >>-
       - run:
           name: "Run yarn install"
-          command: yarn --frozen-lockfile
+          command: |
+            YARN_OPTS=--frozen-lockfile
+            if [[ "$CIRCLE_BRANCH" == greenkeeper/* ]]; then
+              YARN_OPTS=
+            fi
+            yarn $YARN_OPTS
       - steps: << parameters.save-cache-steps >>
