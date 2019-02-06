@@ -22,7 +22,7 @@ commands:
         default:
           - save_cache:
               name: "Save node_modules Cache"
-              key: yarnpkg-<< parameters.cache-version >>-{{ .Branch }}-{{ checksum "yarn.lock" }}
+              key: yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "yarn.lock" }}
               paths:
                 - ~/.cache/yarn
                 - ~/project/node_modules
@@ -34,9 +34,9 @@ commands:
       - restore_cache:
           name: "Restore node_modules Cache"
           keys:
-            - yarnpkg-<< parameters.cache-version >>-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarnpkg-<< parameters.cache-version >>-{{ .Branch }}-
-            - yarnpkg-<< parameters.cache-version >>-
+            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-
+            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-
       - run:
           name: "Run yarn install"
           command: |
