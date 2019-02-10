@@ -25,6 +25,12 @@ commands:
       - node/install-package-manager:
           yarn: true
           yarn_version: << parameters.yarn-version >>
+      - run:
+          name: Setup NPM token
+          command: |
+            if [ "$NPM_TOKEN" ]; then
+              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+            fi
       - restore_cache:
           name: "Restore node_modules Cache"
           keys:
