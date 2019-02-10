@@ -34,11 +34,7 @@ commands:
       - run:
           name: "Run yarn install"
           command: |
-            YARN_OPTS=--frozen-lockfile
-            if [[ "$CIRCLE_BRANCH" == greenkeeper/* ]]; then
-              YARN_OPTS=
-            fi
-            yarn $YARN_OPTS
+            yarn --frozen-lockfile
       - when:
           condition: << parameters.save-cache >>
           steps:
