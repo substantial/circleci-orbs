@@ -16,16 +16,46 @@ commands:
         type: string
         description: Cache version; increment this for a fresh cache.
         default: v1
+
+    steps:
+      - node/install-package-manager:
+          yarn: true
+          yarn_version: << parameters.yarn-version >>
+      - restore_cache:
+          name: "Restore node_modules Cache"
+          keys:
+            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-
+            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-
+      - run:
+          name: "Run yarn install"
+          command: |
+            YARN_OPTS=--frozen-lockfile
+            if [[ "$CIRCLE_BRANCH" == greenkeeper/* ]]; then
+              YARN_OPTS=
+            fi
+            yarn $YARN_OPTS
+      - save_cache:
+          name: "Save node_modules Cache"
+          key: yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+            - ~/project/node_modules
+
+  install-monorepo:
+    description: "yarn install"
+    parameters:
+      yarn-version:
+        type: string
+        description: Version of yarn to use.
+        default: 1.13.0
+      cache-version:
+        type: string
+        description: Cache version; increment this for a fresh cache.
+        default: v1
       save-cache-steps:
         type: steps
-        description: Override if you would like to save more than one node_modules path.
-        default:
-          - save_cache:
-              name: "Save node_modules Cache"
-              key: yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "yarn.lock" }}
-              paths:
-                - ~/.cache/yarn
-                - ~/project/node_modules
+        description: Step to save cache, should include all node_modules directories
 
     steps:
       - node/install-package-manager:
