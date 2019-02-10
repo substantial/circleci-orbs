@@ -1,0 +1,56 @@
+version: 2.1
+description: Common node build commands
+
+commands:
+  eslint:
+    description: "Run eslint"
+    steps:
+      - run:
+          name: Run Lint
+          command: |
+            yarn -s eslint --ext .js,.jsx,.tsx,.ts --format junit -o reports/junit/js-lint-results.xml
+
+  jest:
+    description: "Run jest tests"
+    parameters:
+      max-workers:
+        type: integer
+        description: Number of jest workers to run.
+        default: 4
+    steps:
+      - run:
+          name: Run Tests
+          command: |
+            yarn -s jest --ci --reporters=default \
+              --reporters=jest-junit \
+              --max-workers=<< parameters.max-workers >>
+          environment:
+            JEST_JUNIT_OUTPUT: reports/junit/js-test-results.xml
+
+  store-results:
+    description: "Store test results"
+    steps:
+      - store_test_results:
+          path: ./reports/junit
+
+  release:
+    description: "Release to npm if on appropriate branch"
+    parameters:
+      release-branch:
+        type: string
+        description: Name of branch to release on
+        default: master
+    steps:
+      - run:
+          name: Release if on master
+          command: |
+            if [ "$CIRCLE_BRANCH" = "<< parameters.release-branch >>" ]; then
+              yarn -s semantic-release || true
+            fi
+
+  typecheck:
+    description: "Check typescript types"
+    steps:
+      - run:
+          name: Run Typecheck
+          command: yarn -s tsc
