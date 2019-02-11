@@ -8,7 +8,7 @@ commands:
       - run:
           name: Run Lint
           command: |
-            yarn -s eslint --ext .js,.jsx,.tsx,.ts --format junit -o reports/junit/js-lint-results.xml
+            yarn -s eslint --ext .js,.jsx,.tsx,.ts --format junit -o test-results/eslint-results.xml
 
   jest:
     description: "Run jest tests"
@@ -25,13 +25,15 @@ commands:
               --reporters=jest-junit \
               --max-workers=<< parameters.max-workers >>
           environment:
-            JEST_JUNIT_OUTPUT: reports/junit/js-test-results.xml
+            JEST_JUNIT_OUTPUT: test-results/jest-results.xml
 
   store-results:
     description: "Store test results"
     steps:
       - store_test_results:
-          path: ./reports/junit
+          path: ./test-results
+      - store_artifacts:
+          path: ./test-results
 
   release:
     description: "Release to npm if on appropriate branch"
