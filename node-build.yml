@@ -8,7 +8,8 @@ commands:
       - run:
           name: Run Lint
           command: |
-            yarn -s eslint --ext .js,.jsx,.tsx,.ts --format junit -o test-results/eslint-results.xml
+            yarn -s eslint --ext .js,.jsx,.tsx,.ts \
+              --format junit -o test-results/eslint-results.xml .
 
   jest:
     description: "Run jest tests"
