@@ -41,6 +41,10 @@ commands:
           name: "Run yarn install"
           command: |
             yarn --frozen-lockfile
+      - run:
+          name: "Run yarn audit"
+          command: |
+            yarn audit
       - when:
           condition: << parameters.save-cache >>
           steps:
