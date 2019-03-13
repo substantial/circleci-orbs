@@ -8,7 +8,7 @@ commands:
       - run:
           name: Run Lint
           command: |
-            yarn -s eslint --ext .js,.jsx,.tsx,.ts \
+            `npm bin`/eslint --ext .js,.jsx,.tsx,.ts \
               --format junit -o test-results/eslint-results.xml .
 
   jest:
@@ -27,7 +27,7 @@ commands:
           name: Run Tests
           working_directory: << parameters.working-directory >>
           command: |
-            yarn -s jest --ci --reporters=default \
+            `npm bin`/jest --ci --reporters=default \
               --reporters=jest-junit \
               --maxWorkers=<< parameters.max-workers >>
           environment:
@@ -54,7 +54,7 @@ commands:
           name: Release if on master
           command: |
             if [ "$CIRCLE_BRANCH" = "<< parameters.release-branch >>" ]; then
-              yarn -s semantic-release || true
+              `npm bin`/semantic-release || true
             fi
 
   typecheck:
@@ -68,4 +68,5 @@ commands:
       - run:
           name: Run Typecheck
           working_directory: << parameters.working-directory >>
-          command: yarn -s tsc
+          command: |
+            `npm bin`/tsc
