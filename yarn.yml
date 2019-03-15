@@ -20,6 +20,11 @@ commands:
         type: boolean
         description: Set to false to save cache on your own. Useful for monorepos.
         default: true
+      yarn-install-command:
+        type: string
+        description: Command to run when yarn installing
+        default: |
+            yarn --frozen-lockfile
 
     steps:
       - node/install-package-manager:
@@ -39,8 +44,7 @@ commands:
             - yarnpkg-<< parameters.cache-version >>-{{ arch }}-
       - run:
           name: "Run yarn install"
-          command: |
-            yarn --frozen-lockfile
+          command: << parameters.yarn-install-command >>
       - run:
           name: "Run yarn audit"
           command: |

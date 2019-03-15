@@ -14,6 +14,10 @@ commands:
   jest:
     description: "Run jest tests"
     parameters:
+      task-name:
+        description: Name of task
+        type: string
+        default: Run Tests
       working-directory:
         description: Directory to run jest in.
         type: string
@@ -24,7 +28,7 @@ commands:
         default: 4
     steps:
       - run:
-          name: Run Tests
+          name: << parameters.task-name >>
           working_directory: << parameters.working-directory >>
           command: |
             `npm bin`/jest --ci --reporters=default \
@@ -60,13 +64,17 @@ commands:
   typecheck:
     description: "Check typescript types"
     parameters:
+      task-name:
+        description: Name of task
+        type: string
+        default: Run Typecheck
       working-directory:
         description: Directory to run typecheck in.
         type: string
         default: ~/project
     steps:
       - run:
-          name: Run Typecheck
+          name: << parameters.task-name >>
           working_directory: << parameters.working-directory >>
           command: |
             `npm bin`/tsc
