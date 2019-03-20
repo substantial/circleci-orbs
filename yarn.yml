@@ -49,15 +49,30 @@ commands:
           name: "Run yarn audit"
           command: |
             set +e
-            yarn audit
+            yarn audit 2>yarn-audit-errors
             result=$?
             set -e
 
+            function check-for-down-server() {
+              if grep -q "Error: Request failed" yarn-audit-errors; then
+                cat yarn-audit-errors
+                echo
+                echo "NPM's audit servers are down."
+                echo This happen so often that we are going to ignore this and
+                echo assume everything is okay.
+                exit 0
+              fi
+            }
+
             if [ "$result" != 0 ]; then
+              check-for-down-server
+
               if [ -f yarn-audit-known-issues ]; then
                 set +e
-                yarn audit --json | grep auditAdvisory > yarn-audit-issues
+                yarn audit --json 2>yarn-audit-errors | grep auditAdvisory > yarn-audit-issues
                 set -e
+
+                check-for-down-server
 
                 if diff -q yarn-audit-known-issues yarn-audit-issues > /dev/null 2>&1; then
                   echo
