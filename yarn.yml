@@ -11,7 +11,7 @@ commands:
       yarn-version:
         type: string
         description: Version of yarn to use.
-        default: 1.13.0
+        default: 1.15.2
       cache-version:
         type: string
         description: Cache version; increment this for a fresh cache.
