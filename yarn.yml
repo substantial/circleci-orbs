@@ -5,46 +5,9 @@ orbs:
   node: circleci/node@0.0.7
 
 commands:
-  install:
-    description: "yarn install"
-    parameters:
-      yarn-version:
-        type: string
-        description: Version of yarn to use.
-        default: 1.15.2
-      cache-version:
-        type: string
-        description: Cache version; increment this for a fresh cache.
-        default: v1
-      save-cache:
-        type: boolean
-        description: Set to false to save cache on your own. Useful for monorepos.
-        default: true
-      yarn-install-command:
-        type: string
-        description: Command to run when yarn installing
-        default: |
-            yarn --frozen-lockfile
-
+  audit:
+    description: "yarn audit"
     steps:
-      - node/install-package-manager:
-          yarn: true
-          yarn_version: << parameters.yarn-version >>
-      - run:
-          name: Setup NPM token
-          command: |
-            if [ "$NPM_TOKEN" ]; then
-              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-            fi
-      - restore_cache:
-          name: "Restore node_modules Cache"
-          keys:
-            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-
-            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-
-      - run:
-          name: "Run yarn install"
-          command: << parameters.yarn-install-command >>
       - run:
           name: "Run yarn audit"
           command: |
@@ -96,6 +59,47 @@ commands:
 
               exit "$result"
             fi
+
+  install:
+    description: "yarn install"
+    parameters:
+      yarn-version:
+        type: string
+        description: Version of yarn to use.
+        default: 1.15.2
+      cache-version:
+        type: string
+        description: Cache version; increment this for a fresh cache.
+        default: v1
+      save-cache:
+        type: boolean
+        description: Set to false to save cache on your own. Useful for monorepos.
+        default: true
+      yarn-install-command:
+        type: string
+        description: Command to run when yarn installing
+        default: |
+            yarn --frozen-lockfile
+
+    steps:
+      - node/install-package-manager:
+          yarn: true
+          yarn_version: << parameters.yarn-version >>
+      - run:
+          name: Setup NPM token
+          command: |
+            if [ "$NPM_TOKEN" ]; then
+              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+            fi
+      - restore_cache:
+          name: "Restore node_modules Cache"
+          keys:
+            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-{{ .Branch }}-
+            - yarnpkg-<< parameters.cache-version >>-{{ arch }}-
+      - run:
+          name: "Run yarn install"
+          command: << parameters.yarn-install-command >>
       - when:
           condition: << parameters.save-cache >>
           steps:
