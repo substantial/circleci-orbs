@@ -25,7 +25,7 @@ commands:
       max-workers:
         type: integer
         description: Number of jest workers to run.
-        default: 4
+        default: 8
     steps:
       - run:
           name: << parameters.task-name >>
