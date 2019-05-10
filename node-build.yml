@@ -31,11 +31,10 @@ commands:
           name: << parameters.task-name >>
           working_directory: << parameters.working-directory >>
           command: |
-            `npm bin`/jest --ci --reporters=default \
-              --reporters=jest-junit \
-              --maxWorkers=<< parameters.max-workers >>
-          environment:
-            JEST_JUNIT_OUTPUT: ~/project/test-results/jest-results.xml
+            JEST_JUNIT_OUTPUT="$CIRCLE_WORKING_DIRECTORY/test-results/jest-results.xml" \
+              `npm bin`/jest --ci --reporters=default \
+                --reporters=jest-junit \
+                --maxWorkers=<< parameters.max-workers >>
 
   store-results:
     description: "Store test results"
