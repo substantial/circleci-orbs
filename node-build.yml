@@ -30,7 +30,8 @@ commands:
       - run:
           name: Setup Environment Variables
           command: |
-            echo 'export JEST_JUNIT_OUTPUT="'"$(pwd)"'/test-results/jest-results.xml"' >> $BASH_ENV
+            echo 'export JEST_JUNIT_OUTPUT_DIR="'"$(pwd)"'/test-results"' >> $BASH_ENV
+            echo 'export JEST_JUNIT_OUTPUT_NAME="jest-results.xml"' >> $BASH_ENV
       - run:
           name: << parameters.task-name >>
           working_directory: << parameters.working-directory >>
